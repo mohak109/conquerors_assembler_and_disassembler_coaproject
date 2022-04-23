@@ -1,5 +1,3 @@
-package Sem4;
-
 import java.util.*;
 
 class mcdisassembler {
