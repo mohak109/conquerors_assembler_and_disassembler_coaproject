@@ -37,7 +37,7 @@ class mcassembler {
         arr[arr.length - 2] = funcCode;
 
         String bin = "";
-        for (int i = 0; i < arr.length; i++) {
+        for (int i = 0; i < arr.length-1; i++) {
             bin += arr[i];
         }
         String hex = "";
@@ -90,7 +90,7 @@ class mcassembler {
         arr[3] = cons;
 
         String bin = "";
-        for (int i = 0; i < arr.length; i++) {
+        for (int i = 0; i < arr.length-1; i++) {
             bin += arr[i];
         }
         String hex = "";
@@ -125,7 +125,7 @@ class mcassembler {
         arr[1] = address;
 
         String bin = "";
-        for (int i = 0; i < arr.length; i++) {
+        for (int i = 0; i < arr.length-1; i++) {
             bin += arr[i];
         }
         String hex = "";
@@ -158,7 +158,7 @@ public class assembler {
                         || ins.equalsIgnoreCase("sltu") || ins.equalsIgnoreCase("sll") || ins.equalsIgnoreCase("srl")
                         || ins.equalsIgnoreCase("jr")) {
                     // r type beginning
-                    String[] mcr = new String[6];
+                    String[] mcr;
 
                     if (ins.equalsIgnoreCase("jr")) {
                         String des = line[1];
@@ -181,7 +181,7 @@ public class assembler {
                         || ins.equalsIgnoreCase("sb") || ins.equalsIgnoreCase("beq") || ins.equalsIgnoreCase("bne")
                         || ins.equalsIgnoreCase("addi") || ins.equalsIgnoreCase("andi")) {
                     // itype beginning
-                    String[] mci = new String[4];
+                    String[] mci;
 
                     if (ins.charAt(0) == 'l' || ins.charAt(0) == 's') {
                         String des = line[1];
@@ -229,7 +229,7 @@ public class assembler {
                     // itype ending
                 } else if (ins.equalsIgnoreCase("j") || ins.equalsIgnoreCase("jal")) {
                     // jtype beginning
-                    String[] mcj = new String[2];
+                    String[] mcj;
                     String address = line[1];
                     mcj = mcass.jtype(ins, address);
                     for (int i = 0; i < mcj.length - 1; i++) {
