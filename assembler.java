@@ -56,7 +56,8 @@ class mcassembler {
                 { "sb", "101000" },
                 { "beq", "000100" },
                 { "bne", "000101" },
-                { "addi", "001000" } };
+                { "addi", "001000" },
+                { "andi", "001100" } };
 
         String op = "";
         for (int i = 0; i < func.length; i++) {
@@ -150,98 +151,102 @@ public class assembler {
         String[] line = scan.nextLine().split(" ");
         String ins = line[0];
 
-        while (ins.charAt(0) != '0') {
-            if (ins.equalsIgnoreCase("add") || ins.equalsIgnoreCase("sub") || ins.equalsIgnoreCase("and")
-                    || ins.equalsIgnoreCase("or") || ins.equalsIgnoreCase("nor") || ins.equalsIgnoreCase("slt")
-                    || ins.equalsIgnoreCase("sltu") || ins.equalsIgnoreCase("sll") || ins.equalsIgnoreCase("srl")
-                    || ins.equalsIgnoreCase("jr")) {
-                // r type beginning
-                String[] mcr = new String[6];
+        try{
+            while (ins.charAt(0) != '0') {
+                if (ins.equalsIgnoreCase("add") || ins.equalsIgnoreCase("sub") || ins.equalsIgnoreCase("and")
+                        || ins.equalsIgnoreCase("or") || ins.equalsIgnoreCase("nor") || ins.equalsIgnoreCase("slt")
+                        || ins.equalsIgnoreCase("sltu") || ins.equalsIgnoreCase("sll") || ins.equalsIgnoreCase("srl")
+                        || ins.equalsIgnoreCase("jr")) {
+                    // r type beginning
+                    String[] mcr = new String[6];
 
-                if (ins.equalsIgnoreCase("jr")) {
-                    String des = line[1];
-                    mcr = mcass.rtype(ins, "0", des, "0");
-                } else {
-                    String des = line[1];
-                    String src1 = line[2];
-                    String src2 = line[3];
-
-                    mcr = mcass.rtype(ins, des, src1, src2);
-                }
-
-                for (int i = 0; i < mcr.length - 1; i++) {
-                    System.out.print(mcr[i] + " ");
-                }
-                System.out.println();
-                System.out.print("0x" + mcr[mcr.length - 1]);
-                // rtype ending
-            } else if (ins.equalsIgnoreCase("lw") || ins.equalsIgnoreCase("sw") || ins.equalsIgnoreCase("lb")
-                    || ins.equalsIgnoreCase("sb") || ins.equalsIgnoreCase("beq") || ins.equalsIgnoreCase("bne")
-                    || ins.equalsIgnoreCase("addi")) {
-                // itype beginning
-                String[] mci = new String[4];
-
-                if (ins.charAt(0) == 'l' || ins.charAt(0) == 's') {
-                    String des = line[1];
-                    String str = line[2];
-
-                    String cons = "";
-                    boolean chk = true;
-                    int j = 0;
-                    while (str.charAt(j) != '(') {
-                        cons += str.charAt(j);
-                        j++;
-                        if (j == str.length()) {
-                            chk = false;
-                            break;
-                        }
-                    }
-                    String src = "";
-                    int k = 0;
-                    while (k != str.length()) {
-                        if (str.charAt(k) == ')') {
-                            src = str.substring(k - 3, k);
-                            // System.out.println(src);
-                        }
-                        k++;
-                    }
-                    if (chk) {
-                        mci = mcass.itype(ins, des, src, cons);
+                    if (ins.equalsIgnoreCase("jr")) {
+                        String des = line[1];
+                        mcr = mcass.rtype(ins, "0", des, "0");
                     } else {
-                        mci = mcass.itype(ins, des, cons, "0");
+                        String des = line[1];
+                        String src1 = line[2];
+                        String src2 = line[3];
+
+                        mcr = mcass.rtype(ins, des, src1, src2);
                     }
 
+                    for (int i = 0; i < mcr.length - 1; i++) {
+                        System.out.print(mcr[i] + " ");
+                    }
+                    System.out.println();
+                    System.out.print("0x" + mcr[mcr.length - 1]);
+                    // rtype ending
+                } else if (ins.equalsIgnoreCase("lw") || ins.equalsIgnoreCase("sw") || ins.equalsIgnoreCase("lb")
+                        || ins.equalsIgnoreCase("sb") || ins.equalsIgnoreCase("beq") || ins.equalsIgnoreCase("bne")
+                        || ins.equalsIgnoreCase("addi") || ins.equalsIgnoreCase("andi")) {
+                    // itype beginning
+                    String[] mci = new String[4];
+
+                    if (ins.charAt(0) == 'l' || ins.charAt(0) == 's') {
+                        String des = line[1];
+                        String str = line[2];
+
+                        String cons = "";
+                        boolean chk = true;
+                        int j = 0;
+                        while (str.charAt(j) != '(') {
+                            cons += str.charAt(j);
+                            j++;
+                            if (j == str.length()) {
+                                chk = false;
+                                break;
+                            }
+                        }
+                        String src = "";
+                        int k = 0;
+                        while (k != str.length()) {
+                            if (str.charAt(k) == ')') {
+                                src = str.substring(k - 3, k);
+                                // System.out.println(src);
+                            }
+                            k++;
+                        }
+                        if (chk) {
+                            mci = mcass.itype(ins, des, src, cons);
+                        } else {
+                            mci = mcass.itype(ins, des, cons, "0");
+                        }
+
+                    } else {
+                        String des = line[1];
+                        String src = line[2];
+                        String cons = line[3];
+
+                        mci = mcass.itype(ins, des, src, cons);
+                    }
+
+                    for (int i = 0; i < mci.length - 1; i++) {
+                        System.out.print(mci[i] + " ");
+                    }
+                    System.out.println();
+                    System.out.print("0x" + mci[mci.length - 1]);
+                    // itype ending
+                } else if (ins.equalsIgnoreCase("j") || ins.equalsIgnoreCase("jal")) {
+                    // jtype beginning
+                    String[] mcj = new String[2];
+                    String address = line[1];
+                    mcj = mcass.jtype(ins, address);
+                    for (int i = 0; i < mcj.length - 1; i++) {
+                        System.out.print(mcj[i] + " ");
+                    }
+                    System.out.println();
+                    System.out.print("0x" + mcj[mcj.length - 1]);
+                    // jtype ending
                 } else {
-                    String des = line[1];
-                    String src = line[2];
-                    String cons = line[3];
-
-                    mci = mcass.itype(ins, des, src, cons);
-                }
-
-                for (int i = 0; i < mci.length - 1; i++) {
-                    System.out.print(mci[i] + " ");
+                    System.out.println("Check your code, there must be an error!!");
                 }
                 System.out.println();
-                System.out.print("0x" + mci[mci.length - 1]);
-                // itype ending
-            } else if (ins.equalsIgnoreCase("j") || ins.equalsIgnoreCase("jal")) {
-                // jtype beginning
-                String[] mcj = new String[2];
-                String address = line[1];
-                mcj = mcass.jtype(ins, address);
-                for (int i = 0; i < mcj.length - 1; i++) {
-                    System.out.print(mcj[i] + " ");
-                }
-                System.out.println();
-                System.out.print("0x" + mcj[mcj.length - 1]);
-                // jtype ending
-            } else {
-                System.out.println("Check your code, there must be an error!!!");
+                line = scan.nextLine().split(" ");
+                ins = line[0];
             }
-            System.out.println();
-            line = scan.nextLine().split(" ");
-            ins = line[0];
+        } catch (Exception e) {
+            System.out.println("Check your code, there must be an error!!");
         }
         scan.close();
     }

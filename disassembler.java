@@ -30,7 +30,8 @@ class mcdisassembler {
                 { "sb", "101000" },
                 { "beq", "000100" },
                 { "bne", "000101" },
-                { "addi", "001000" } };
+                { "addi", "001000" },
+                { "andi", "001100" } };
 
         for (int i = 0; i < func.length; i++) {
             if (mc.substring(0, 6).equalsIgnoreCase(func[i][1])) {
@@ -119,20 +120,26 @@ public class disassembler {
         mcdisassembler mcdis = new mcdisassembler();
         String ac = "";
 
-        while (!mc.equalsIgnoreCase("0")) {
-            mc = converter.hextobin(mc.substring(2));
-            if (Integer.parseInt(mc.substring(0, 6), 2) == 0) {
-                // rtype
-                ac = mcdis.rtype(mc);
-            } else if (Integer.parseInt(mc.substring(0, 6), 2) == 2 || Integer.parseInt(mc.substring(0, 6), 2) == 3) {
-                // jtype
-                ac = mcdis.jtype(mc);
-            } else {
-                // itype
-                ac = mcdis.itype(mc);
+        try{
+            while (!mc.equalsIgnoreCase("0")) {
+                mc = converter.hextobin(mc.substring(2));
+                if (Integer.parseInt(mc.substring(0, 6), 2) == 0) {
+                    // rtype
+                    ac = mcdis.rtype(mc);
+                } else if (Integer.parseInt(mc.substring(0, 6), 2) == 2 || Integer.parseInt(mc.substring(0, 6), 2) == 3) {
+                    // jtype
+                    ac = mcdis.jtype(mc);
+                } else if (Integer.parseInt(mc.substring(0, 6), 2) > 3 /*&& Integer.parseInt(mc.substring(0, 6), 2) < 44*/) {
+                    // itype
+                    ac = mcdis.itype(mc);
+                } else {
+                    System.out.println("Check your code, there must be an error!!");
+                }
+                System.out.println(ac);
+                mc = scan.nextLine();
             }
-            System.out.println(ac);
-            mc = scan.nextLine();
+        } catch (Exception e) {
+            System.out.println("Check your code, there must be an error!!");
         }
 
         scan.close();
