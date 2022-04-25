@@ -148,7 +148,7 @@ public class assembler {
         System.out.println("Press 0 when you finish your code");
 
         mcassembler mcass = new mcassembler();
-        String[] line = scan.nextLine().split(" ");
+        String[] line = scan.nextLine().split("\\s+");
         String ins = line[0];
 
         try{
